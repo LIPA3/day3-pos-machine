@@ -3,11 +3,11 @@ package utils;
 import java.util.List;
 
 public class Receipt {
-    public List<ReceiptProduct> receiptProducts;
+    public List<ReceiptItem> receiptItems;
     public int totalPrice;
 
-    public Receipt(List<ReceiptProduct> receiptProducts, int totalPrice) {
-        this.receiptProducts = receiptProducts;
+    public Receipt(List<ReceiptItem> receiptItems, int totalPrice) {
+        this.receiptItems = receiptItems;
         this.totalPrice = totalPrice;
     }
 }

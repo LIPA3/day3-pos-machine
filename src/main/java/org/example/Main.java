@@ -1,56 +1,56 @@
-import utils.Product;
+import utils.Item;
 import utils.Receipt;
-import utils.ReceiptProduct;
+import utils.ReceiptItem;
 
 import java.util.*;
 
 public class Main {
-    public static List<Product> loadAllProducts() {
+    public static List<Item> loadAllItems() {
         return Arrays.asList(
-                new Product("ITEM000000", "Coca-Cola", 3),
-                new Product("ITEM000001", "Sprite", 3),
-                new Product("ITEM000004", "Battery", 2)
+                new Item("ITEM000000", "Coca-Cola", 3),
+                new Item("ITEM000001", "Sprite", 3),
+                new Item("ITEM000004", "Battery", 2)
         );
     }
-    public static List<Product> decodeToProducts(List<String> barcodes) {
-        List<Product> allProducts = loadAllProducts();
-        Map<String, Product> productMap = new HashMap<>();
-        for (Product product : allProducts) {
-            productMap.put(product.barcode, product);
+    public static List<Item> decodeToItems(List<String> barcodes) {
+        List<Item> allItems = loadAllItems();
+        Map<String, Item> itemMap = new HashMap<>();
+        for (Item item : allItems) {
+            itemMap.put(item.barcode, item);
         }
 
-        List<Product> products = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
         for (String barcode : barcodes) {
-            products.add(productMap.get(barcode));
+            items.add(itemMap.get(barcode));
         }
-        return products;
+        return items;
     }
-    public static List<ReceiptProduct> calculateProductsCost(List<Product> products) {
-        Map<String, Integer> productCountMap = new HashMap<>();
-        for (Product product : products) {
-            if (productCountMap.containsKey(product.barcode)) {
-                productCountMap.put(product.barcode, productCountMap.get(product.barcode) + 1);
+    public static List<ReceiptItem> calculateItemsCost(List<Item> items) {
+        Map<String, Integer> itemCountMap = new HashMap<>();
+        for (Item item : items) {
+            if (itemCountMap.containsKey(item.barcode)) {
+                itemCountMap.put(item.barcode, itemCountMap.get(item.barcode) + 1);
             } else {
-                productCountMap.put(product.barcode, 1);
+                itemCountMap.put(item.barcode, 1);
             }
         }
 
-        List<ReceiptProduct> receiptProducts = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : productCountMap.entrySet()) {
-            Product product = products.stream().filter(i -> i.barcode.equals(entry.getKey())).findFirst().get();
-            receiptProducts.add(new ReceiptProduct(product.name, entry.getValue(), product.price, entry.getValue() * product.price));
+        List<ReceiptItem> receiptItems = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : itemCountMap.entrySet()) {
+            Item item = items.stream().filter(i -> i.barcode.equals(entry.getKey())).findFirst().get();
+            receiptItems.add(new ReceiptItem(item.name, entry.getValue(), item.price, entry.getValue() * item.price));
         }
-        return receiptProducts;
+        return receiptItems;
     }
-    public static int calculateTotalPrice(List<ReceiptProduct> receiptItems) {
+    public static int calculateTotalPrice(List<ReceiptItem> receiptItems) {
         return receiptItems.stream().mapToInt(item -> item.subTotal).sum();
     }
     public static String printReceipt(List<String> barcodes) {
-        List<Product> products = decodeToProducts(barcodes);
-        List<ReceiptProduct> receiptProducts = calculateProductsCost(products);
-        int totalPrice = calculateTotalPrice(receiptProducts);
+        List<Item> items = decodeToItems(barcodes);
+        List<ReceiptItem> receiptItems = calculateItemsCost(items);
+        int totalPrice = calculateTotalPrice(receiptItems);
 
-        Receipt receipt = new Receipt(receiptProducts, totalPrice);
+        Receipt receipt = new Receipt(receiptItems, totalPrice);
 
         return renderReceipt(receipt);
     }
@@ -59,9 +59,9 @@ public class Main {
         StringBuilder receiptString = new StringBuilder();
         receiptString.append("***<store earning no money>Receipt***\n");
 
-        for (ReceiptProduct product : receipt.receiptProducts) {
+        for (ReceiptItem item : receipt.receiptItems) {
             receiptString.append(String.format("Name: %s, Quantity: %d, Unit price: %d (yuan), Subtotal: %d (yuan)\n",
-                    product.name, product.quantity, product.unitPrice, product.subTotal));
+                    item.name, item.quantity, item.unitPrice, item.subTotal));
         }
 
         receiptString.append("----------------------\n");
