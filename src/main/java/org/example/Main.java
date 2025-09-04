@@ -14,11 +14,13 @@ public class Main {
     }
     public static List<Item> decodeToItems(List<String> barcodes) {
         List<Item> allItems = loadAllItems();
-        Map<String, Item> itemMap = new HashMap<>();
+        Map<String, Item> itemMap = new LinkedHashMap<>();
+        if(barcodes == null || barcodes.size() == 0) {
+            throw new IllegalArgumentException("Barcodes list cannot be null or empty");
+        }
         for (Item item : allItems) {
             itemMap.put(item.barcode, item);
         }
-
         List<Item> items = new ArrayList<>();
         for (String barcode : barcodes) {
             items.add(itemMap.get(barcode));
